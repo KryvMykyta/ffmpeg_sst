@@ -6,7 +6,7 @@ dotenv.config()
 export default {
   config(_input) {
     return {
-      name: 'pisyapopa',
+      name: 'ffmpeg',
       region: process.env.AWS_REGION as string,
     };
   },
