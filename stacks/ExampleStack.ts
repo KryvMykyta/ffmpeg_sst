@@ -1,7 +1,7 @@
-import { Bucket, StackContext } from "sst/constructs";
+import { Bucket, Job, StackContext } from "sst/constructs";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as dotenv from "dotenv";
-dotenv.config()
+dotenv.config();
 
 export function ExampleStack({ stack }: StackContext) {
   // Create a new bucket
@@ -9,9 +9,10 @@ export function ExampleStack({ stack }: StackContext) {
     notifications: {
       resize: {
         function: {
-          runtime: 'nodejs18.x',
-          timeout: 300,
-          handler: "packages/functions/src/resize.main",
+          runtime: "nodejs18.x",
+          timeout: 30,
+          // handler: "packages/functions/src/lambda.main",
+          handler: "packages/functions/src/job.crop",
           nodejs: {
             esbuild: {
               // external: ["fluent-ffmpeg"],
@@ -27,7 +28,6 @@ export function ExampleStack({ stack }: StackContext) {
       },
     },
   });
-
   // Allow the notification functions to access the bucket
   bucket.attachPermissions([bucket]);
 

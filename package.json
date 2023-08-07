@@ -7,7 +7,7 @@
     "dev": "sst dev",
     "build": "sst build",
     "deploy": "sst deploy --stage root",
-    "remove": "sst remove",
+    "remove": "sst remove --stage root",
     "console": "sst console",
     "typecheck": "tsc --noEmit"
   },
@@ -26,8 +26,10 @@
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@ffprobe-installer/ffprobe": "^2.1.1",
+    "@serverless-stack/node": "^1.18.4",
     "@tsconfig/node18": "^18.2.0",
     "dotenv": "^16.3.1",
-    "fluent-ffmpeg": "^2.1.2"
+    "fluent-ffmpeg": "^2.1.2",
+    "request": "^2.88.2"
   }
 }
