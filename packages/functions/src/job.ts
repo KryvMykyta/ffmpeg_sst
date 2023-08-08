@@ -17,7 +17,8 @@ const prefix = `resized`;
 const S3 = new AWS.S3();
 
 const cropUtil = async (input: string, outStream: Writable, format = "mp4") => {
-  const cmd = "/opt/ffmpeg";
+  // const cmd = "/opt/ffmpeg";  lambda version
+  const cmd = "ffmpeg" // container version
   const cmdArgs = [
     "-i",
     `${input}`,
@@ -48,6 +49,38 @@ const cropUtil = async (input: string, outStream: Writable, format = "mp4") => {
 };
 
 export const crop = async (event: S3Event) => {
+  try {
+    const s3Record = event.Records[0].s3;
+    const Key = s3Record.object.key;
+    const format = Key.split(".").pop();
+    const Bucket = s3Record.bucket.name;
+    if (Key.startsWith(prefix)) {
+      return;
+    }
+    if (format !== "mkv" && format !== "avi" && format !== "mp4") {
+      return;
+    }
+
+    const inputFile = await S3.getSignedUrl("getObject", {
+      Bucket,
+      Key,
+      Expires: 1500,
+    });
+
+    const bucketStream = new stream.PassThrough();
+    const newKey = `${prefix}-${Key}`;
+
+    await cropUtil(inputFile, bucketStream);
+
+    await S3.upload({ Bucket, Key: newKey, Body: bucketStream }).promise();
+
+    return;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const handler = async (event: S3Event) => {
   try {
     const s3Record = event.Records[0].s3;
     const Key = s3Record.object.key;
