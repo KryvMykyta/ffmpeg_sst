@@ -1,4 +1,4 @@
-import { Bucket, Job, StackContext } from "sst/constructs";
+import { Bucket, Job, StackContext, Function } from "sst/constructs";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -9,26 +9,30 @@ export function ExampleStack({ stack }: StackContext) {
     notifications: {
       resize: {
         function: {
-          runtime: "nodejs18.x",
+          // runtime: "nodejs18.x",
+          runtime: "container",
           timeout: 30,
+          memorySize: 3008,
           // handler: "packages/functions/src/lambda.main",
-          handler: "packages/functions/src/job.crop",
-          nodejs: {
-            esbuild: {
-              // external: ["fluent-ffmpeg"],
-            },
-          },
-          layers: [
-            new lambda.LayerVersion(stack, "FfmpegLayer", {
-              code: lambda.Code.fromAsset("layer/ffmpeg"),
-            }),
-          ],
+          // handler: "packages/functions/src/job.crop",
+          handler: "./packages/functions",
+          // nodejs: {
+          //   esbuild: {
+          //     // external: ["fluent-ffmpeg"],
+          //   },
+          // },
+          // layers: [
+          //   new lambda.LayerVersion(stack, "FfmpegLayer", {
+          //     code: lambda.Code.fromAsset("layer/ffmpeg"),
+          //   }),
+          // ],
         },
         events: ["object_created"],
       },
     },
   });
-  // Allow the notification functions to access the bucket
+
+
   bucket.attachPermissions([bucket]);
 
   // Show the endpoint in the output

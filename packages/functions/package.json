@@ -4,12 +4,14 @@
   "type": "module",
   "scripts": {
     "test": "sst bind vitest",
+    "build": "tsc --noEmit && esbuild src/job.ts --bundle --platform=node --outfile=build/index.js",
     "typecheck": "tsc -noEmit"
   },
   "devDependencies": {
-    "@types/node": "^20.4.7",
     "@types/aws-lambda": "^8.10.119",
-    "vitest": "^0.34.1",
-    "sst": "^2.23.2"
+    "@types/node": "^20.4.7",
+    "esbuild": "^0.19.0",
+    "sst": "^2.23.2",
+    "vitest": "^0.34.1"
   }
 }
